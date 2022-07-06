@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/goit-react-hw-03-image-finder/static/css/main.2eddcfa4.css",
-    "main.js": "/goit-react-hw-03-image-finder/static/js/main.5f046ddd.js",
-    "index.html": "/goit-react-hw-03-image-finder/index.html",
-    "static/media/icons8-search.svg": "/goit-react-hw-03-image-finder/static/media/icons8-search.3ab5dc83117860b22861.svg",
-    "main.2eddcfa4.css.map": "/goit-react-hw-03-image-finder/static/css/main.2eddcfa4.css.map",
-    "main.5f046ddd.js.map": "/goit-react-hw-03-image-finder/static/js/main.5f046ddd.js.map"
+    "main.css": "/goit-react-hw-04-hooks-image/static/css/main.3a699611.css",
+    "main.js": "/goit-react-hw-04-hooks-image/static/js/main.0c60d717.js",
+    "index.html": "/goit-react-hw-04-hooks-image/index.html",
+    "static/media/icons8-search.svg": "/goit-react-hw-04-hooks-image/static/media/icons8-search.3ab5dc83117860b22861.svg",
+    "main.3a699611.css.map": "/goit-react-hw-04-hooks-image/static/css/main.3a699611.css.map",
+    "main.0c60d717.js.map": "/goit-react-hw-04-hooks-image/static/js/main.0c60d717.js.map"
   },
   "entrypoints": [
-    "static/css/main.2eddcfa4.css",
-    "static/js/main.5f046ddd.js"
+    "static/css/main.3a699611.css",
+    "static/js/main.0c60d717.js"
   ]
 }
