@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import styles from 'styles/App.module.css';
 import { Searchbar } from 'components/Searchbar';
 import { ImageGallery } from 'components/ImageGallery';
@@ -9,118 +9,100 @@ import { Modal } from 'components/Modal';
 import { Loader } from 'components/Loader';
 
 
-class App extends Component {
-  static defaultProps = {};
+export const App = () => {
+  const [pictures, setPictures] = useState([]);
+  const [bigPicture, setBigPicture] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  // eslint-disable-next-line
+  const [error, setError] = useState(null);
+  const [lookingValue, setLookingValue] = useState('');
+  const [page, setPage] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  static propTypes = {};
-
-  state = {
-    pictures: [],
-    bigPicture: [],
-    isLoading: false,
-    error: null,
-
-    lookingValue: '',
-    page: 1,
-
-    isModalOpen: false,
+  const handleChange = (ev) => {
+    ev.preventDefault();
+    setLookingValue(ev.target.value);
   };
 
-  handleChange = event => {
-    event.preventDefault();
-    this.setState({ lookingValue: event.target.value });
-  };
-
-  handleSubmit = async event => {
-    event.preventDefault();
-    this.setState({ isLoading: true });
+  const handleSubmit = async (ev) => {
+    ev.preventDefault();
+    setIsLoading(true);
     try {
       const response = await finderInstance.get(
-        `?q=${this.state.lookingValue}&key=26610249-d0ecba3c93167ffebf2a906f0&page=${this.state.page}&image_type=photo&orientation=horizontal&per_page=12`
+        `?q=${lookingValue}&key=26610249-d0ecba3c93167ffebf2a906f0&page=${page}&image_type=photo&orientation=horizontal&per_page=12`
       );
-      this.setState({ pictures: response.data.hits, page: 2 });
+      setPictures(response.data.hits);
+      setPage(2);
     } catch (error) {
-      this.setState({ error });
+      setError(error);
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
   };
 
-  handleLoadMore = async event => {
-    event.preventDefault();
-
-    this.setState({ isLoading: true });
+  const handleLoadMore = async (ev) => {
+    ev.preventDefault();
+    setIsLoading(true);
     try {
       const response = await finderInstance.get(
-        `?q=${this.state.lookingValue}&page=${this.state.page}&key=26610249-d0ecba3c93167ffebf2a906f0&image_type=photo&orientation=horizontal&per_page=12`
+        `?q=${lookingValue}&page=${page}&key=26610249-d0ecba3c93167ffebf2a906f0&image_type=photo&orientation=horizontal&per_page=12`
       );
-      this.setState(prevState => ({
-        pictures: [...prevState.pictures, ...response.data.hits],
-      }));
+      setPictures([...pictures, ...response.data.hits]);
     } catch (error) {
-      this.setState({ error });
+      setError(error);
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
-    this.setState(prevState => {
-      return { page: prevState.page + 1 };
-    });
+    setPage(page + 1);
   };
 
-  handleModalOpenClose = (id) => {
-    if (this.state.isModalOpen) {
-      this.setState({ isModalOpen: false });
+  const handleModalOpenClose = (id) => {
+    if (isModalOpen) {
+      setIsModalOpen(false);
     } else {
-      this.setState({ isModalOpen: true });
+      setIsModalOpen(true);
     }
 
-    const uniqueBigPicture = this.state.pictures.find(
-      picture => picture.id === id
-    );
-    this.setState({ bigPicture: uniqueBigPicture });
+    const uniqueBigPicture = pictures.find(picture => picture.id === id);
+    setBigPicture(uniqueBigPicture);
   };
 
-  handleModalCloseByKey = (event) => { 
-  if (event.key === 'Escape' && this.state.isModalOpen) {
-    this.setState({ isModalOpen: false });
-  }
+  const handleModalCloseByKey = (ev) => { 
+    if (ev.key === 'Escape' && isModalOpen) {
+      setIsModalOpen(false);
+    }
   };
 
-  render() {
-    const { pictures, lookingValue, isLoading } = this.state;
-    return (
-      <div
-        className={styles.App}
-        onKeyDown={this.handleModalCloseByKey}
-        tabIndex="-1"
-      >
-        <Searchbar
-          onSubmit={this.handleSubmit}
-          onChange={this.handleChange}
-          value={lookingValue}
-        />
-
-        <ImageGallery>
-          <ImageGalleryItem
-            pictures={pictures}
-            onClick={this.handleModalOpenClose}
-          />
-        </ImageGallery>
-        {isLoading && <Loader color="#3f51b5" />}
-        <Button
+  return (
+    <div
+      className={styles.App}
+      onKeyDown={handleModalCloseByKey}
+      tabIndex="-1"
+    >
+      <Searchbar
+        onSubmit={handleSubmit}
+        onChange={handleChange}
+        value={lookingValue}
+      />
+      <ImageGallery>
+        <ImageGalleryItem
           pictures={pictures}
-          onClick={this.handleLoadMore}
-          isLoading={isLoading}
+          onClick={handleModalOpenClose}
         />
-        <Modal
-          isModalOpen={this.state.isModalOpen}
-          bigPicture={this.state.bigPicture}
-          onClick={this.handleModalOpenClose}
-        />
-      </div>
-    );
-  }
+      </ImageGallery>
+      {isLoading && <Loader color="#3f51b5" />}
+      <Button
+        pictures={pictures}
+        onClick={handleLoadMore}
+        isLoading={isLoading}
+      />
+      <Modal
+        isModalOpen={isModalOpen}
+        bigPicture={bigPicture}
+        onClick={handleModalOpenClose}
+      />
+    </div>
+  );
 }
-
 
 export default App;
